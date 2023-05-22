@@ -16,23 +16,36 @@ type ddAction struct {
 	name           string
 	ddScanType     string
 	ddEngagementId string
+	apiUrl         string
+	apiKey         string
 	expectError    bool
 }
 
+const apiKey_valid = "89717f551c7cf8285921307d172603227029985e"
+const apiKey_invalid = "89717f551c7cf8285921307d172603a07029985zz"
+
 var getNameTCs = []ddAction{
-	{"getName-1", "Nmap Scan", "8982391823", false},
-	{"getName-2", "Trivy Operator Scan", "984989384", false},
+	{"getName-1", "Nmap Scan", "8982391823", "http://mydd.mydomain.com", apiKey_valid, false},
+	{"getName-2", "Trivy Operator Scan", "984989384", "http://mydd.mydomain.com", apiKey_valid, false},
 }
 
 var initTCs = []ddAction{
-	{"init-1", "Nmap Scan", "897987987", false},
-	{"init-2", "Unknown Scan Type", "897987987", true},
+	{"init-1", "Nmap Scan", "897987987", "http://mydd.mydomain.com", apiKey_valid, false},
+	{"init-2", "Unknown Scan Type", "897987987", "http://mydd.mydomain.com", apiKey_valid, true},
+	{"init-3", "Nmap Scan", "897987987", "", apiKey_valid, true},
+	{"init-4", "Nmap Scan", "897987987", "http://mydd.mydomain.com", apiKey_invalid, true},
 }
 
 func TestDD_GetName(t *testing.T) {
 
 	for _, test := range getNameTCs {
-		dd := DefectDojoAction{ddProductName: test.name, ddScanType: test.ddScanType, ddEngagementId: test.ddEngagementId}
+		dd := DefectDojoAction{
+			ddProductName:  test.name,
+			ddScanType:     test.ddScanType,
+			ddEngagementId: test.ddEngagementId,
+			apiUrl:         test.apiUrl,
+			apiKey:         test.apiKey,
+		}
 		if test.expectError {
 			require.Error(t, dd.Init())
 		} else {
@@ -48,6 +61,8 @@ func Test_DD_Init(t *testing.T) {
 			ddProductName:  test.name,
 			ddScanType:     test.ddScanType,
 			ddEngagementId: test.ddEngagementId,
+			apiUrl:         test.apiUrl,
+			apiKey:         test.apiKey,
 		}
 		if test.expectError {
 			require.Error(t, dd.Init())
@@ -77,5 +92,4 @@ func Test_DD_Terminate(t *testing.T) {
 	}
 
 	require.NoError(t, dd.Terminate())
-
 }
