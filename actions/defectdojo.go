@@ -7,7 +7,8 @@ import (
 )
 
 type DefectDojoAction struct {
-	APIKey           string
+	apiKey           string
+	apiUrl           string
 	minimumSeverity  string
 	ddActive         bool
 	ddVerified       bool
@@ -53,4 +54,14 @@ func (dd *DefectDojoAction) Init() error {
 
 func (dd *DefectDojoAction) GetName() string {
 	return dd.ddProductName
+}
+
+func (dd DefectDojoAction) Send() error {
+	log.Printf("DefectDojo action \"%s\", sent", dd.ddProductName)
+	return nil
+}
+
+func (dd *DefectDojoAction) Terminate() error {
+	log.Printf("DefectDojo action \"%s\" terminated", dd.ddProductName)
+	return nil
 }

@@ -56,3 +56,26 @@ func Test_DD_Init(t *testing.T) {
 		}
 	}
 }
+
+func Test_DD_Send(t *testing.T) {
+	// test standard action function Send()
+	dd := DefectDojoAction{
+		ddProductName:  "checkSend",
+		ddScanType:     "Nmap Scan",
+		ddEngagementId: "46",
+	}
+
+	require.NoError(t, dd.Send())
+}
+
+func Test_DD_Terminate(t *testing.T) {
+	// create an instance and terminate it
+	dd := DefectDojoAction{
+		ddProductName:  "checkTerminate",
+		ddScanType:     "Nmap Scan",
+		ddEngagementId: "23123123",
+	}
+
+	require.NoError(t, dd.Terminate())
+
+}
